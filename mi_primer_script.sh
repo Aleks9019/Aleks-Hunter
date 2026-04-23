@@ -2,101 +2,79 @@
 
 # Colores
 VERDE="\e[32m"
-CYAN="\e[36m"
+AZUL="\e[34m"
 ROJO="\e[31m"
 AMARILLO="\e[33m"
-GRIS="\e[90m"
+CYAN="\e[36m"
 FIN="\e[0m"
 
-# Bucle infinito para que el script no se cierre solo
 while true; do
     clear
-    # --- BANNER SÓLIDO (ALEKS HUNTER) ---
+    # AQUÍ ESTÁN LAS LETRAS GRANDES QUE FALTABAN
     echo -e "${ROJO}"
-    echo " █████  ██      ███████ ██   ██ ███████ "
-    echo "██   ██ ██      ██      ██  ██  ██      "
-    echo "███████ ██      █████   █████   ███████ "
-    echo "██   ██ ██      ██      ██  ██       ██ "
-    echo "██   ██ ███████ ███████ ██   ██ ███████ "
+    echo "  █████╗ ██╗     ███████╗██╗  ██╗███████╗"
+    echo " ██╔══██╗██║     ██╔════╝██║ ██╔╝██╔════╝"
+    echo " ███████║██║     █████╗  █████╔╝ ███████╗"
+    echo " ██╔══██║██║     ██╔══╝  ██╔═██╗ ╚════██║"
+    echo " ██║  ██║███████╗███████╗██║  ██╗███████║"
+    echo " ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝╚══════╝"
     echo -e "${CYAN}"
-    echo "██   ██ ██   ██ ███    ██ ████████ ███████ ██████  "
-    echo "██   ██ ██   ██ ████   ██    ██    ██      ██   ██ "
-    echo "███████ ██   ██ ██ ██  ██    ██    █████   ██████  "
-    echo "██   ██ ██   ██ ██  ██ ██    ██    ██      ██   ██ "
-    echo "██   ██  █████  ██   ████    ██    ███████ ██   ██ "
-
-    # --- BARRA DE ESTADO ---
-    echo -e "${GRIS}------------------------------------------------------------"
-    echo -ne "${VERDE}[+] USUARIO: ${FIN}$(whoami)  "
-    echo -ne "${VERDE}[+] IP: ${FIN}$(hostname -I | awk '{print $1}')  "
-    echo -e "${VERDE}[+] TOR: ${FIN}$(systemctl is-active tor)"
-    echo -e "${GRIS}------------------------------------------------------------${FIN}"
-
-    echo -e "${VERDE}1)${FIN} MODO FANTASMA (MAC + TOR)"
-    echo -e "${VERDE}2)${FIN} VERIFICAR ANONIMATO (IP)"
-    echo -e "${VERDE}3)${FIN} CAZA DE CUENTAS (Email)"
-    echo -e "${VERDE}4)${FIN} CAZA DE REDES (Username)"
-    echo -e "${VERDE}5)${FIN} RASTREO GPS (IP/Web)"
-    echo -e "${VERDE}6)${FIN} ESCANEO SIGILOSO (Nmap + Tor)"
-    echo -e "${AMARILLO}7)${FIN} LIMPIAR HUELLAS (Deep Clean)"
-    echo -e "${ROJO}8) SALIR${FIN}"
-    echo -e "${CYAN}============================================================${FIN}"
-    echo -n "Selecciona tu herramienta, Hunter: "
-    read OPCION
+    echo " ██╗  ██╗██╗   ██╗███╗   ██╗████████╗███████╗██████╗ "
+    echo " ██║  ██║██║   ██║████╗  ██║╚══██╔══╝██╔════╝██╔══██╗"
+    echo " ███████║██║   ██║██╔██╗ ██║   ██║   █████╗  ██████╔╝"
+    echo " ██╔══██║██║   ██║██║╚██╗██║   ██║   ██╔══╝  ██╔══██╗"
+    echo " ██║  ██║╚██████╔╝██║ ╚████║   ██║   ███████╗██║  ██║"
+    echo " ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝"
+    echo -e "${FIN}"
+    echo -e "           ${AMARILLO}v2.0 - Coded by Aleks9019${FIN}"
+    echo "--------------------------------------------------------"
+    echo -e "${AMARILLO} 0)${FIN} INSTALAR/ACTUALIZAR DEPENDENCIAS"
+    echo -e "${AMARILLO} 1)${FIN} RASTREO DE IP (Nmap)"
+    echo -e "${AMARILLO} 2)${FIN} BUSCAR REDES SOCIALES (Sherlock/Holehe)"
+    echo -e "${AMARILLO} 3)${FIN} CAMBIAR DIRECCIÓN MAC"
+    echo -e "${AMARILLO} 4)${FIN} SALIR"
+    echo "--------------------------------------------------------"
+    read -p "Selecciona una opción: " OPCION
 
     case $OPCION in
+        0)
+            echo -e "\n${VERDE}[+] Instalando dependencias necesarias...${FIN}"
+            sudo apt update && sudo apt install -y nmap tor macchanger curl python3-pip git
+            python3 -m pip install holehe
+            echo -e "${VERDE}[+] Proceso completado.${FIN}"
+            read -p "Presiona Enter para volver..."
+            ;;
         1)
-            echo -e "\n${VERDE}[+] Activando protocolos...${FIN}"
-            sudo systemctl start tor
-            IFACE=$(ip route | grep default | awk '{print $5}' | head -n 1)
-            sudo ip link set $IFACE down && sudo macchanger -r $IFACE && sudo ip link set $IFACE up
-            echo -e "${VERDE}¡Invisibilidad activa!${FIN}"
-            read -p "Presiona Enter para volver al menú..."
+            if ! command -v nmap &> /dev/null; then
+                echo -e "${ROJO}[!] Nmap no está instalado. Usa la opción 0.${FIN}"
+            else
+                read -p "Introduce la IP a rastrear: " IP
+                nmap -F $IP
+            fi
+            read -p "Presiona Enter para volver..."
             ;;
         2)
-            echo -e "\n${CYAN}[+] Tu IP pública actual (Vía Tor):${FIN}"
-            proxychains4 curl -s https://ifconfig.me
-            echo -e "\n"
-            read -p "Presiona Enter para volver al menú..."
+            echo -e "\n${AZUL}1. Buscar por Email (Holehe)${FIN}"
+            echo -e "${AZUL}2. Buscar por Usuario (Sherlock)${FIN}"
+            read -p "Selección: " SUB
+            if [ "$SUB" == "1" ]; then
+                read -p "Email: " MAIL
+                holehe $MAIL
+            else
+                echo -e "${ROJO}[!] Asegúrate de tener Sherlock en la misma carpeta.${FIN}"
+            fi
+            read -p "Presiona Enter para volver..."
             ;;
         3)
-            echo -n "Introduce el correo: "
-            read CORREO
-            proxychains4 holehe $CORREO
-            read -p "Presiona Enter para volver al menú..."
+            sudo macchanger -s eth0
+            read -p "Presiona Enter para volver..."
             ;;
         4)
-            echo -n "Introduce el usuario: "
-            read USER
-            proxychains4 sherlock $USER --print-found
-            read -p "Presiona Enter para volver al menú..."
-            ;;
-        5)
-            echo -n "Introduce IP/Web: "
-            read OBJETIVO_IP
-            proxychains4 curl -s http://ip-api.com/line/$OBJETIVO_IP
-            read -p "Presiona Enter para volver al menú..."
-            ;;
-        6)
-            echo -e "\n${AMARILLO}[!] Escaneando puertos de forma anónima...${FIN}"
-            echo -n "Objetivo: "
-            read SCAN_IP
-            proxychains4 nmap -sT -PN -n -F $SCAN_IP
-            read -p "Presiona Enter para volver al menú..."
-            ;;
-        7)
-            echo -e "\n${ROJO}[!] Purgando logs de la VM...${FIN}"
-            sudo rm -rf /var/log/auth.log /var/log/syslog 2>/dev/null
-            history -c
-            echo "Operación limpia."
-            sleep 2
-            ;;
-        8)
-            echo "Cerrando sistema, Hunter fuera..."
+            echo "Apagando el sistema Hunter..."
             exit 0
             ;;
         *)
-            echo -e "${ROJO}Opción no válida.${FIN}"
+            echo "Opción no válida."
             sleep 2
             ;;
     esac
