@@ -1,81 +1,53 @@
 #!/bin/bash
 
-# Colores
-VERDE="\e[32m"
-AZUL="\e[34m"
-ROJO="\e[31m"
-AMARILLO="\e[33m"
-CYAN="\e[36m"
-FIN="\e[0m"
+# --- COLORES ---
+R='\033[0;31m'
+G='\033[0;32m'
+Y='\033[1;33m'
+B='\033[0;34m'
+C='\033[0;36m'
+NC='\033[0m'
+
+clear
+
+menu() {
+    echo -e "${R}"
+    echo "  ▄▄▄▄▄  ▄      ▄▄▄▄▄  ▄  ▄▄▄     ▄   ▄  ▄   ▄  ▄   ▄  ▄▄▄▄▄  ▄▄▄▄  "
+    echo "  █   █  █      █      █ █        █   █  █   █  █▄  █    █    █   █ "
+    echo "  █▄▄▄█  █      █▄▄▄   ██         █▄▄▄█  █   █  █ █ █    █    █▄▄▄▀ "
+    echo "  █   █  █      █      █ █        █   █  █   █  █  ██    █    █  ▀▄ "
+    echo "  █   █  █▄▄▄▄  █▄▄▄▄  █  █▄▄     █   █  ▀▄▄▄▀  █   █    █    █   █ "
+    echo -e "                            [ Versión 2.0 - Suite Blindada ]${NC}"
+    echo -e "                 ${C}Desarrollado por: Aleks 9019${NC}\n"
+    
+    IP=$(hostname -I | awk '{print $1}')
+    echo -e "${Y}IP LOCAL:${NC} $IP  |  ${R}ESTADO:${NC} Hunter Activo"
+    echo -e "--------------------------------------------------------------------------"
+    echo -e "${G}1)${NC} MODO FANTASMA (MAC)   ${G}6)${NC} NAVEGADOR TOR"
+    echo -e "${G}2)${NC} TEST CONEXIÓN         ${G}7)${NC} LIMPIEZA TOTAL"
+    echo -e "${G}3)${NC} RASTREO CORREO        ${G}8)${NC} RADAR NMAP"
+    echo -e "${G}4)${NC} RASTREO USUARIO       ${G}9)${NC} EXIFTOOL (FOTOS)"
+    echo -e "${G}5)${NC} GEOLOCALIZAR IP       ${R}10) SALIR${NC}"
+    echo -e "--------------------------------------------------------------------------"
+    read -p "Selecciona una herramienta, Hunter: " op
+}
 
 while true; do
-    clear
-    # AQUÍ ESTÁN LAS LETRAS GRANDES QUE FALTABAN
-    echo -e "${ROJO}"
-    echo "  █████╗ ██╗     ███████╗██╗  ██╗███████╗"
-    echo " ██╔══██╗██║     ██╔════╝██║ ██╔╝██╔════╝"
-    echo " ███████║██║     █████╗  █████╔╝ ███████╗"
-    echo " ██╔══██║██║     ██╔══╝  ██╔═██╗ ╚════██║"
-    echo " ██║  ██║███████╗███████╗██║  ██╗███████║"
-    echo " ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝╚══════╝"
-    echo -e "${CYAN}"
-    echo " ██╗  ██╗██╗   ██╗███╗   ██╗████████╗███████╗██████╗ "
-    echo " ██║  ██║██║   ██║████╗  ██║╚══██╔══╝██╔════╝██╔══██╗"
-    echo " ███████║██║   ██║██╔██╗ ██║   ██║   █████╗  ██████╔╝"
-    echo " ██╔══██║██║   ██║██║╚██╗██║   ██║   ██╔══╝  ██╔══██╗"
-    echo " ██║  ██║╚██████╔╝██║ ╚████║   ██║   ███████╗██║  ██║"
-    echo " ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝"
-    echo -e "${FIN}"
-    echo -e "           ${AMARILLO}v2.0 - Coded by Aleks9019${FIN}"
-    echo "--------------------------------------------------------"
-    echo -e "${AMARILLO} 0)${FIN} INSTALAR/ACTUALIZAR DEPENDENCIAS"
-    echo -e "${AMARILLO} 1)${FIN} RASTREO DE IP (Nmap)"
-    echo -e "${AMARILLO} 2)${FIN} BUSCAR REDES SOCIALES (Sherlock/Holehe)"
-    echo -e "${AMARILLO} 3)${FIN} CAMBIAR DIRECCIÓN MAC"
-    echo -e "${AMARILLO} 4)${FIN} SALIR"
-    echo "--------------------------------------------------------"
-    read -p "Selecciona una opción: " OPCION
-
-    case $OPCION in
-        0)
-            echo -e "\n${VERDE}[+] Instalando dependencias necesarias...${FIN}"
-            sudo apt update && sudo apt install -y nmap tor macchanger curl python3-pip git
-            python3 -m pip install holehe
-            echo -e "${VERDE}[+] Proceso completado.${FIN}"
-            read -p "Presiona Enter para volver..."
-            ;;
-        1)
-            if ! command -v nmap &> /dev/null; then
-                echo -e "${ROJO}[!] Nmap no está instalado. Usa la opción 0.${FIN}"
-            else
-                read -p "Introduce la IP a rastrear: " IP
-                nmap -F $IP
-            fi
-            read -p "Presiona Enter para volver..."
-            ;;
-        2)
-            echo -e "\n${AZUL}1. Buscar por Email (Holehe)${FIN}"
-            echo -e "${AZUL}2. Buscar por Usuario (Sherlock)${FIN}"
-            read -p "Selección: " SUB
-            if [ "$SUB" == "1" ]; then
-                read -p "Email: " MAIL
-                holehe $MAIL
-            else
-                echo -e "${ROJO}[!] Asegúrate de tener Sherlock en la misma carpeta.${FIN}"
-            fi
-            read -p "Presiona Enter para volver..."
-            ;;
-        3)
-            sudo macchanger -s eth0
-            read -p "Presiona Enter para volver..."
-            ;;
-        4)
-            echo "Apagando el sistema Hunter..."
-            exit 0
-            ;;
-        *)
-            echo "Opción no válida."
-            sleep 2
-            ;;
+    menu
+    case $op in
+        1) sudo ifconfig eth0 down && sudo macchanger -r eth0 && sudo ifconfig eth0 up ;;
+        2) proxychains curl -s https://ifconfig.me ;;
+        3) read -p "Email: " em && proxychains holehe $em ;;
+        4) read -p "User: " us && proxychains sherlock $us ;;
+        5) read -p "IP: " ip && curl -s https://ipapi.co/$ip/json/ ;;
+        6) proxychains firefox --private-window https://check.torproject.org & ;;
+        7) history -c && rm -rf ~/.cache/mozilla/firefox/* && echo -e "${G}Limpio${NC}" ;;
+        8) read -p "IP/Host: " h && nmap -F --open $h ;;
+        9) read -e -p "Ruta: " r && exiftool "$r" ;;
+        10) echo -e "\n${R}Buena caza, Aleks 9019.${NC}" && exit 0 ;;
+        *) echo "Opción inválida" ;;
     esac
+    echo -e "\n"
+    read -p "Presiona Enter para volver al menú..."
+    clear
 done
